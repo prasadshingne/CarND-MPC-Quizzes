@@ -43,7 +43,28 @@ VectorXd globalKinematic(const VectorXd &state,
    *   to return the next state from the inputs.
    */
 
-  // NOTE: state is [x, y, psi, v] and actuators is [delta, a]
+  // NOTE: state is [x, y, psi, v] and 
+  auto x = state[0];
+  auto y = state[1];
+  auto psi = state[2];
+  auto v = state[3];
+
+  // actuators is [delta, a]
+  auto delta = actuators[0];
+  auto a = actuators[1];
+
+  // Recall the equations for the model:
+  // x_[t+1] = x[t] + v[t] * cos(psi[t]) * dt
+  // y_[t+1] = y[t] + v[t] * sin(psi[t]) * dt
+  // psi_[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
+  // v_[t+1] = v[t] + a[t] * dt
+
+  next_state[0] = x + v * cos(psi) * dt;
+  next_state[1] = x + v * sin(psi) * dt;
+  next_state[2] = psi + v/Lf * delta * dt;
+  next_state[3] = v + a * dt;
+  
+
 
   return next_state;
 }
